@@ -40,21 +40,39 @@ def build_source_units(
     )
     rows = llm.chat_json(prompt, schema=array_schema(schema))
     if not isinstance(rows, list):
-        raise RuntimeError("source unit generation returned non-array")
+        raise RuntimeError(
+            f"source unit generation returned {type(rows).__name__}, expected list. "
+            f"Check prompts/01_source_units.md — must instruct LLM to return JSON array."
+        )
 
-    accepted, rejected = [], []
+    # Bug #3 fix: validate ALL rows first, then apply limit_units cleanly. The old
+    # behaviour broke mid-loop, producing inconsistent partial accepted+rejected
+    # lists when limit_units < len(rows). New behaviour validates everything for
+    # auditability, then slices accepted (and counts the truncation) so rejected
+    # always reflects real validation failures, never artificial cutoffs.
+    accepted_all, rejected_all = [], []
     for serial, row in enumerate(rows, start=1):
-        if limit_units and serial > limit_units:
-            break
         row["unit_id"] = unit_id(settings.class_level, chapter_no, serial)
         row["source_id"] = source_id
         row["train_allowed"] = False
         errors = validate_item(row, schema)
         if errors:
-            rejected.append({"errors": errors, "row": row})
+            rejected_all.append({"errors": errors, "row": row})
         else:
-            accepted.append(row)
+            accepted_all.append(row)
+
+    if limit_units and len(accepted_all) > limit_units:
+        truncated = len(accepted_all) - limit_units
+        accepted = accepted_all[:limit_units]
+    else:
+        truncated = 0
+        accepted = accepted_all
 
     write_jsonl(output_file, accepted)
-    write_jsonl(rejected_file, rejected)
-    return {"source_units": len(accepted), "rejected_source_units": len(rejected)}
+    write_jsonl(rejected_file, rejected_all)
+    return {
+        "source_units": len(accepted),
+        "rejected_source_units": len(rejected_all),
+        "truncated_by_limit": truncated,
+        "total_generated": len(rows),
+    }

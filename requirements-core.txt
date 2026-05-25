@@ -2,6 +2,16 @@ openai>=1.40.0
 python-dotenv>=1.0.1
 jsonschema>=4.22.0
 tqdm>=4.66.0
-langgraph>=1.0.0
+# Bug #7 fix: pin langgraph to a real version range. The original "langgraph>=1.0.0"
+# pin caused pip install failures because LangGraph 1.0 was not released. Use a
+# permissive range that accepts both 0.2.x and any 1.x release.
+langgraph>=0.2.0,<2.0.0
+langgraph-checkpoint-sqlite>=2.0.0
 typing_extensions>=4.10.0
 scikit-learn>=1.4.0
+# Added M1: retry/backoff for transient LLM failures.
+tenacity>=8.2.0
+# Added M1: structured logging.
+structlog>=24.1.0
+# Added M1: real Pydantic models for API contracts (used in Phase 2 and onwards).
+pydantic>=2.5.0
