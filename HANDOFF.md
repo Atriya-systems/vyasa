@@ -7,8 +7,8 @@
 **Owner:** Piyush Batra · ATRIYA SYSTEMS PVT LTD · CONFIDENTIAL
 **Repository:** https://github.com/Atriya-systems/vyasa
 **Python package (unchanged):** `aspireace_mocf` — kept stable to avoid churning every import path
-**Version:** v1.0.0-M1 (M1 milestone closed) — see CHANGELOG.md
-**Last refreshed:** 2026-05-25 (M1 close + rebrand to Vyasa)
+**Version:** v2.0.0-M3 (M3 milestone closed; Phase 1 + Phase 3 production-ready)
+**Last refreshed:** 2026-05-25 (M3 close — fine-tuning pipeline added)
 
 ---
 
@@ -52,7 +52,11 @@ docs/                       deep-dive guides per topic
 
 **v0.3.0 baseline committed** at the initial git init. 68 files, exactly as the founder shared 2026-05-25.
 
-**v1.0.0-M1 CLOSED.** Elite enhancement Pass 1 complete. ~6,000 lines added across documentation, code, tests, and config. Phase 1 is now production-ready.
+**v1.0.0-M1 CLOSED.** Elite enhancement Pass 1. Phase 1 production-ready.
+
+**v2.0.0-M3 CLOSED.** Fine-tuning pipeline. Phase 3 production-ready. **M2 (Phase 2 API layer) was deferred per founder reframe** at M1 close: "build the fine-tuning part next; the data we generate today is also training data." With the app not yet being deployed, the API-layer's consumer (AspireACE BFF) isn't ready to need it.
+
+**Milestone sequence (revised):** M1 → **M3 (built out of order)** → M2 → M4.
 
 **M1 — Foundation + Phase 1 hardening:** ✅ COMPLETE
 - ✅ Foundational docs (6 anchor files: HANDOFF, ARCHITECTURE, PHASE_ROADMAP, OPERATING_GUIDE, ELITE_BAR, CHANGELOG)

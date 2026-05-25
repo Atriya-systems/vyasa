@@ -7,9 +7,104 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) +
 
 ---
 
-## [Unreleased] — v2.0.0 (M2 — Phase 2 API layer)
+## [Unreleased] — v3.0.0 (M2 — Phase 2 API layer, deferred)
 
-Not started. See [PHASE_ROADMAP.md](PHASE_ROADMAP.md) §M2 for scope.
+Per founder reframe at M1 close: build M3 (fine-tuning) before M2 (API) because the app isn't being deployed yet, so the API-layer consumer (AspireACE BFF) isn't ready to need it. Meanwhile every record produced is also training data, so the SFT pipeline matters now.
+
+See [PHASE_ROADMAP.md](PHASE_ROADMAP.md) §M2 for scope when M2 picks up.
+
+---
+
+## [2.0.0-M3] — 2026-05-25
+
+**Milestone:** M3 — Fine-tuning pipeline.
+**Status:** CLOSED.
+**Sessions:** 2026-05-25.
+**Sequencing note:** Built before M2 per founder reframe.
+
+### Added — training package (src/aspireace_mocf/training/)
+
+- `data_prep.py` — assemble train/eval splits from SME-approved JSONL.
+  Legal gate at training time (train_allowed + sme_verified + approver +
+  timestamp + drafted_by + lane). Token-budget pre-check. Stratified split
+  by subject + chapter_no + record_type. Provenance manifest with SHA-256
+  of source files. Rejected records appended to filtered_out.jsonl with
+  reason (audit trail).
+- `chat_templates.py` — per-model chat-template formatters: ChatML,
+  Qwen, Llama 3, Phi 3, Mistral/Mixtral alias, generic. Detect-from-name.
+- `golden_set.py` — versioned eval-set tooling. append_record / freeze_version
+  / load_version (with hash verification + tamper detection) / list_versions.
+  CHANGES.md generated per version. Working set vs frozen versions strictly
+  separated.
+- `eval_harness.py` — run any model against golden set. Per-record scoring on
+  4 dimensions (subject_correctness, teaching_quality, source_grounding,
+  app_usefulness). Aggregate per-dimension / per-subject / per-difficulty.
+  Structured eval_report.json + record_results.jsonl + EVAL_SUMMARY.md.
+  diff_eval_runs() warns on golden-set version mismatch.
+- `model_registry.py` — versioned trained-model ledger. register_model with
+  artifact SHA-256 (files OR directories). update_model_eval appends to
+  eval_history with best-score tracking. set_model_status enforces
+  lifecycle transitions. verify_artifact_integrity for tamper detection.
+
+### Added — schemas
+
+- `schemas/tutor_eval_record.schema.json` — JSON Schema 2020-12 for golden
+  eval records (query, ideal_response, dimensions 0-5, author_teacher_id,
+  authored_at_utc, optional notes_to_evaluator).
+
+### Added — training scripts (hardened + new)
+
+Hardened from v0.3.0 skeletons:
+- `training/train_lora_sft.py` — arg validation, GPU state probe, QLoRA
+  support (BitsAndBytesConfig 4-bit NF4 + double-quant), MLflow params,
+  training_summary.json output consumable by model_registry.
+- `training/train_base_cpt.py` — same hardening for the base-corpus variant.
+- `training/merge_adapter.py` — arg validation, --torch-dtype flag, next-step
+  guidance.
+
+New:
+- `training/quantize_for_serving.py` — GGUF q4_k_m / q5_k_m / q8_0 (LM Studio);
+  AWQ int4 (vLLM); bnb int4 / int8 in-process guidance.
+- `training/README.md` — 6-step quick-reference runbook + GPU sizing + cost.
+
+### Added — Phase 3 CLI subcommands
+
+In `src/aspireace_mocf/cli.py`:
+- `train-data-prep` — assemble training dataset from SME-approved runs
+- `register-model` — auto-hydrates from training_summary.json
+- `list-models` — optional --status filter
+- `eval-model` — run target against golden set + auto-update registry
+- `diff-evals` — delta between two eval reports
+- `golden-append` — append golden record from JSON file
+- `golden-freeze` — freeze working set as new version
+
+### Added — documentation
+
+- `docs/PHASE_3_TRAINING_GUIDE.md` — full operator runbook:
+  6-step flow (data_prep → train → merge → quantize → register → eval) +
+  golden-set authoring (append + freeze) + GPU sizing table (5060 8GB →
+  A100 80GB) + cloud-rental cost math (Runpod / Lambda / Together) +
+  when-to-train-vs-wait heuristics + troubleshooting.
+
+### Added — tests (~60 new)
+
+- tests/unit/training/test_chat_templates.py — 19 tests
+- tests/unit/training/test_data_prep.py — 19 tests (legal gate +
+  shape checks + token budget + stratification + end-to-end + lane discovery)
+- tests/unit/training/test_golden_set.py — 18 tests (append + freeze +
+  load with hash verify + tamper detection + working_count)
+- tests/unit/training/test_eval_harness.py — 14 tests (normalisation +
+  single-record happy/error + aggregation + end-to-end with mocks + diff)
+- tests/unit/training/test_model_registry.py — 18 tests (register +
+  duplicates + status transitions + eval updates + integrity)
+
+### Verification at M3 close
+
+- 19 chat_templates tests pass locally without external deps. Other M3
+  tests need pip install -r requirements-core.txt (structlog, jsonschema,
+  tenacity).
+- 12 atomic commits on `main` + tag `v2.0.0-M3` + pushed to
+  https://github.com/Atriya-systems/vyasa.
 
 ---
 
