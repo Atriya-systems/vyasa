@@ -1,0 +1,54 @@
+{
+  "content_type": "trick",
+  "version": "1.0.0",
+  "description": "Review rubric for short-trick / mathematical-shortcut cards.",
+  "criteria": [
+    {
+      "key": "mathematical_validity",
+      "label": "Mathematical validity",
+      "description": "Trick produces the correct answer under stated conditions. SymPy / hand-verification passes.",
+      "weight": 0.40,
+      "scale": "1-5",
+      "minimum_pass": 5
+    },
+    {
+      "key": "applicability_clarity",
+      "label": "Applicability clarity",
+      "description": "Conditions for when the trick applies AND when it fails are stated explicitly. Critical to prevent misuse.",
+      "weight": 0.25,
+      "scale": "1-5",
+      "minimum_pass": 4
+    },
+    {
+      "key": "memorability",
+      "label": "Memorability",
+      "description": "Trick is short enough to remember under exam pressure. If it requires more steps than first-principles, it's not a trick.",
+      "weight": 0.15,
+      "scale": "1-5",
+      "minimum_pass": 3
+    },
+    {
+      "key": "worked_example_quality",
+      "label": "Worked example quality",
+      "description": "At least one PYQ-style worked example showing the trick saves time vs first-principles.",
+      "weight": 0.15,
+      "scale": "1-5",
+      "minimum_pass": 4
+    },
+    {
+      "key": "boundary_safety",
+      "label": "Boundary safety",
+      "description": "'When this trick fails' annotation is present and concrete. Not just 'sometimes it doesn't apply'.",
+      "weight": 0.05,
+      "scale": "1-5",
+      "minimum_pass": 4
+    }
+  ],
+  "approval_rule": "mathematical_validity MUST be 5/5 (no near-misses on math). Other criteria meet minimum_pass.",
+  "common_flag_types": [
+    "factual_error",
+    "formula_error",
+    "level_inappropriate",
+    "unclear_wording"
+  ]
+}

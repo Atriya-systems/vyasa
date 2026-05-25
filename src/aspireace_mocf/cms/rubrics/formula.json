@@ -1,0 +1,53 @@
+{
+  "content_type": "formula",
+  "version": "1.0.0",
+  "description": "Review rubric for structured formula_record entries (formula library).",
+  "criteria": [
+    {
+      "key": "latex_correctness",
+      "label": "LaTeX expression correctness",
+      "description": "LaTeX renders correctly. Variables match standard symbols. Subscripts/superscripts in the right places.",
+      "weight": 0.30,
+      "scale": "1-5",
+      "minimum_pass": 5
+    },
+    {
+      "key": "statement_clarity",
+      "label": "Plain-English statement clarity",
+      "description": "The plain-English statement matches the LaTeX exactly. Variable meanings are explicit.",
+      "weight": 0.20,
+      "scale": "1-5",
+      "minimum_pass": 4
+    },
+    {
+      "key": "applicability_completeness",
+      "label": "Applicability conditions completeness",
+      "description": "All conditions for the formula to apply are listed. Common student misuses (forgetting one condition) are pre-empted.",
+      "weight": 0.20,
+      "scale": "1-5",
+      "minimum_pass": 4
+    },
+    {
+      "key": "worked_example_quality",
+      "label": "Worked example quality",
+      "description": "Example uses realistic numbers, shows substitution + result. Brief but complete.",
+      "weight": 0.15,
+      "scale": "1-5",
+      "minimum_pass": 4
+    },
+    {
+      "key": "dimensional_check",
+      "label": "Dimensional consistency check",
+      "description": "(Physics + Chem) Dimensional check is correct and confirms the formula. (Maths) Can be marked N/A.",
+      "weight": 0.15,
+      "scale": "1-5",
+      "minimum_pass": 4
+    }
+  ],
+  "approval_rule": "latex_correctness MUST be 5/5. dimensional_check 'N/A' for Maths formulas is acceptable.",
+  "common_flag_types": [
+    "formula_error",
+    "factual_error",
+    "unclear_wording"
+  ]
+}

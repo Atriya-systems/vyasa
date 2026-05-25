@@ -1,0 +1,53 @@
+{
+  "content_type": "mnemonic",
+  "version": "1.0.0",
+  "description": "Review rubric for mnemonic / memory-aid cards (acronyms, songs, stories, image-mnemonics).",
+  "criteria": [
+    {
+      "key": "accuracy",
+      "label": "Underlying content accuracy",
+      "description": "The thing being memorized via the mnemonic is itself correct (e.g. if the mnemonic encodes the order of planets, the order is right).",
+      "weight": 0.30,
+      "scale": "1-5",
+      "minimum_pass": 5
+    },
+    {
+      "key": "memorability",
+      "label": "Memorability",
+      "description": "Will a Class 11/12 student remember this after one exposure? Distinctive enough to stick? Rhymes / images / patterns help.",
+      "weight": 0.30,
+      "scale": "1-5",
+      "minimum_pass": 4
+    },
+    {
+      "key": "cultural_fit",
+      "label": "Cultural fit (Indian context)",
+      "description": "References make sense to Indian Class 11/12 students. Avoid US-centric or alien references. Bollywood / cricket / mythology references encouraged where natural.",
+      "weight": 0.20,
+      "scale": "1-5",
+      "minimum_pass": 3
+    },
+    {
+      "key": "decoding_clarity",
+      "label": "Decoding clarity",
+      "description": "Student can decode the mnemonic back into the underlying content without ambiguity.",
+      "weight": 0.15,
+      "scale": "1-5",
+      "minimum_pass": 4
+    },
+    {
+      "key": "tastefulness",
+      "label": "Tastefulness / safety",
+      "description": "No offensive, derogatory, or culturally insensitive content. No mnemonics that rely on stereotypes.",
+      "weight": 0.05,
+      "scale": "1-5",
+      "minimum_pass": 5
+    }
+  ],
+  "approval_rule": "accuracy + tastefulness MUST be 5/5. Other criteria meet minimum_pass.",
+  "common_flag_types": [
+    "factual_error",
+    "language_issue",
+    "level_inappropriate"
+  ]
+}
