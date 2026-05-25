@@ -122,8 +122,12 @@ def generate_training_lane(
     prompt_file, schema_file, prefix, _ = LANE_PROMPTS[lane]
     units = read_jsonl(units_file)
     schema = load_schema(PROJECT_ROOT / "schemas" / schema_file)
-    # Subject-aware: base v1 + subject addendum applied per unit's subject.
-    template = load_prompt(prompt_file, subject=settings.subject)
+    # M4: style applied only to lanes where it's meaningful. base_subject is
+    # plain-text corpus where style would distort the linguistic signal; skip
+    # there. tutor_app + content_generator are conversational — style applies.
+    apply_style = settings.explanation_style if lane in {"tutor_app", "content_generator"} else ""
+    # Subject-aware + style-aware: base v1 + subject addendum + style addendum.
+    template = load_prompt(prompt_file, subject=settings.subject, style=apply_style)
     accepted, rejected = [], []
 
     for unit in tqdm(units, desc=f"Generate {lane}"):
@@ -187,7 +191,10 @@ def generate_app_lane(
     prefix, card_type, surface = APP_LANES[lane]
     units = read_jsonl(units_file)
     schema = load_schema(PROJECT_ROOT / "schemas" / "app_card.schema.json")
-    template = load_prompt("05_app_cards.md", subject=settings.subject)
+    # M4: style applied only to notes lane where prose-style matters. Other
+    # app lanes (tricks, dpp_tests, etc.) have their own intrinsic shape.
+    apply_style = settings.explanation_style if lane == "notes" else ""
+    template = load_prompt("05_app_cards.md", subject=settings.subject, style=apply_style)
     accepted, rejected = [], []
 
     for unit in tqdm(units, desc=f"Generate app lane {lane}"):
@@ -227,6 +234,11 @@ def generate_app_lane(
                 "topic": unit["topic"],
                 "subtopic": unit["subtopic"],
             })
+            # M4: record the explanation_style used so downstream A/B routing can
+            # bucket records by style. Empty when no style was applied.
+            if apply_style:
+                raw["explanation_style"] = apply_style
+                raw["metadata"]["explanation_style"] = apply_style
             schema_errs = validate_item(raw, schema)
             if schema_errs:
                 rejected.append({

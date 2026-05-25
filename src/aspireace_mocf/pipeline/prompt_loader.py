@@ -1,14 +1,14 @@
-"""Prompt loader — resolves base prompt + optional subject addendum into final text.
+"""Prompt loader — resolves base prompt + optional subject addendum + optional style addendum.
 
-Purpose: single entry point for loading any LLM prompt template. Resolves the
-prompt path with versioning awareness (prefer `prompts/v1/<file>` over
-legacy `prompts/<file>`) and concatenates a per-subject addendum from
-`prompts/subjects/<subject>/addendum.md` when present.
+Purpose: single entry point for loading any LLM prompt template. Composes:
+  1. base v1 prompt (or legacy fallback)
+  2. + subject addendum (Physics / Chemistry / Biology / Mathematics — optional)
+  3. + style addendum (concise / detailed / analogy_led — M4 addition, optional)
 
 See `prompts/README.md` for the full resolution-order + versioning spec.
 
-Owner: ATRIYA / AspireACE Factory
-Version: 1.0.0 (M1)
+Owner: ATRIYA / Vyasa
+Version: 1.1.0 (M4 — adds style-addendum layer)
 """
 from __future__ import annotations
 
@@ -22,6 +22,11 @@ from aspireace_mocf.utils.logging import get_logger
 _log = get_logger(__name__)
 
 _SUBJECT_SEPARATOR = "\n\n---\n## Subject-specific guidance\n\n"
+_STYLE_SEPARATOR = "\n\n---\n## Explanation style\n\n"
+
+
+# M4 — allowed styles. Empty string means "no style override (canonical version)."
+ALLOWED_STYLES: frozenset[str] = frozenset({"", "concise", "detailed", "analogy_led"})
 
 
 def _resolve_base_path(filename: str) -> Path:
@@ -45,21 +50,35 @@ def _resolve_base_path(filename: str) -> Path:
 
 
 def _subject_addendum_path(subject: str | None) -> Path | None:
-    """Return the addendum path if it exists, else None."""
+    """Return the subject addendum path if it exists, else None."""
     if not subject:
         return None
     candidate = PROJECT_ROOT / "prompts" / "subjects" / subject.strip().lower() / "addendum.md"
     return candidate if candidate.exists() else None
 
 
-@lru_cache(maxsize=128)
-def load_prompt(filename: str, subject: str | None = None) -> str:
-    """Return the final prompt text: base + (optional) subject addendum.
+def _style_addendum_path(style: str | None) -> Path | None:
+    """Return the style addendum path if it exists and style is allowed, else None."""
+    if not style:
+        return None
+    key = style.strip().lower()
+    if key not in ALLOWED_STYLES or key == "":
+        return None
+    candidate = PROJECT_ROOT / "prompts" / "styles" / f"{key}.md"
+    return candidate if candidate.exists() else None
+
+
+@lru_cache(maxsize=256)
+def load_prompt(filename: str, subject: str | None = None, style: str | None = None) -> str:
+    """Return the final prompt text: base + (optional) subject + (optional) style.
 
     Args:
         filename: prompt file name, e.g. ``"01_source_units.md"``.
         subject: subject name (case-insensitive), e.g. ``"Chemistry"``.
-            When None, no addendum is appended.
+            When None or empty, no subject addendum is appended.
+        style: explanation style (case-insensitive), one of
+            ``"concise"``, ``"detailed"``, ``"analogy_led"``, or empty/None
+            for the canonical version with no style override.
 
     Returns:
         Concatenated prompt text.
@@ -71,19 +90,25 @@ def load_prompt(filename: str, subject: str | None = None) -> str:
     re-reading them on every LLM call wastes ~0.5 ms × thousands of records.
     """
     base_path = _resolve_base_path(filename)
-    base_text = base_path.read_text(encoding="utf-8")
-    addendum_path = _subject_addendum_path(subject)
-    if addendum_path is None:
-        return base_text
-    addendum_text = addendum_path.read_text(encoding="utf-8")
+    text = base_path.read_text(encoding="utf-8")
+
+    subject_path = _subject_addendum_path(subject)
+    if subject_path is not None:
+        text += _SUBJECT_SEPARATOR + subject_path.read_text(encoding="utf-8")
+
+    style_path = _style_addendum_path(style)
+    if style_path is not None:
+        text += _STYLE_SEPARATOR + style_path.read_text(encoding="utf-8")
+
     _log.debug(
-        "prompt_loaded_with_addendum",
+        "prompt_loaded",
         filename=filename,
         subject=subject,
-        base_path=str(base_path),
-        addendum_path=str(addendum_path),
+        style=style,
+        has_subject_addendum=subject_path is not None,
+        has_style_addendum=style_path is not None,
     )
-    return base_text + _SUBJECT_SEPARATOR + addendum_text
+    return text
 
 
 def clear_prompt_cache() -> None:
