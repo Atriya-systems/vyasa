@@ -28,6 +28,7 @@ from typing import Any
 from tqdm import tqdm
 
 from aspireace_mocf.pipeline.ids import card_id, record_id
+from aspireace_mocf.pipeline.prompt_loader import load_prompt
 from aspireace_mocf.providers.llm import LLMClient
 from aspireace_mocf.settings import PROJECT_ROOT, Settings
 from aspireace_mocf.utils.errors import VerificationErrorCode
@@ -55,15 +56,6 @@ APP_LANES = {
     "grading_feedback": ("RUBRIC", "grading_rubric", "HSGE_GRADING_FEEDBACK"),
     "revision": ("REV", "revision_card", "REVISION_ENGINE"),
 }
-
-
-def _prompt_path(filename: str) -> Path:
-    """Resolve a prompt template, preferring `prompts/v1/<filename>` if it exists,
-    falling back to the legacy `prompts/<filename>` location."""
-    v1 = PROJECT_ROOT / "prompts" / "v1" / filename
-    if v1.exists():
-        return v1
-    return PROJECT_ROOT / "prompts" / filename
 
 
 def _normalize_train_record(
@@ -130,7 +122,8 @@ def generate_training_lane(
     prompt_file, schema_file, prefix, _ = LANE_PROMPTS[lane]
     units = read_jsonl(units_file)
     schema = load_schema(PROJECT_ROOT / "schemas" / schema_file)
-    template = _prompt_path(prompt_file).read_text(encoding="utf-8")
+    # Subject-aware: base v1 + subject addendum applied per unit's subject.
+    template = load_prompt(prompt_file, subject=settings.subject)
     accepted, rejected = [], []
 
     for unit in tqdm(units, desc=f"Generate {lane}"):
@@ -194,7 +187,7 @@ def generate_app_lane(
     prefix, card_type, surface = APP_LANES[lane]
     units = read_jsonl(units_file)
     schema = load_schema(PROJECT_ROOT / "schemas" / "app_card.schema.json")
-    template = _prompt_path("05_app_cards.md").read_text(encoding="utf-8")
+    template = load_prompt("05_app_cards.md", subject=settings.subject)
     accepted, rejected = [], []
 
     for unit in tqdm(units, desc=f"Generate app lane {lane}"):

@@ -50,11 +50,12 @@ def _schema_for_lane(lane: str) -> str:
     return "app_card.schema.json"
 
 
-def _judge(row: dict[str, Any], llm: LLMClient) -> dict[str, Any]:
+def _judge(row: dict[str, Any], llm: LLMClient, subject: str | None = None) -> dict[str, Any]:
+    """Run the LLM-judge against one record. Subject is optional addendum."""
+    from aspireace_mocf.pipeline.prompt_loader import load_prompt
+
     schema = load_schema(PROJECT_ROOT / "schemas/judge_response.schema.json")
-    template = (PROJECT_ROOT / "prompts/v1/06_judge.md").read_text(encoding="utf-8") \
-        if (PROJECT_ROOT / "prompts/v1/06_judge.md").exists() \
-        else (PROJECT_ROOT / "prompts/06_judge.md").read_text(encoding="utf-8")
+    template = load_prompt("06_judge.md", subject=subject)
     return llm.chat_json(
         template.format(record_json=json.dumps(row, ensure_ascii=False, indent=2)),
         schema=schema,
@@ -114,7 +115,7 @@ def verify_lane(
         # Only call judge if no hard errors yet — saves tokens.
         if llm_judge and llm is not None and not codes:
             try:
-                judge = _judge(row, llm)
+                judge = _judge(row, llm, subject=settings.subject)
                 scores = [
                     judge["subject_correctness"],
                     judge["teaching_quality"],

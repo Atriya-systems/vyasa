@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Any
 
 from aspireace_mocf.pipeline.ids import unit_id
+from aspireace_mocf.pipeline.prompt_loader import load_prompt
 from aspireace_mocf.providers.llm import LLMClient
 from aspireace_mocf.settings import PROJECT_ROOT, Settings
 from aspireace_mocf.utils.jsonio import read_json, write_jsonl
@@ -28,7 +29,9 @@ def build_source_units(
     source_id = extract_source_id(data)
 
     schema = load_schema(PROJECT_ROOT / "schemas/source_unit.schema.json")
-    prompt = (PROJECT_ROOT / "prompts/01_source_units.md").read_text(encoding="utf-8").format(
+    # Subject-aware prompt: base v1 + subject addendum (chem/bio/math/physics).
+    prompt_template = load_prompt("01_source_units.md", subject=settings.subject)
+    prompt = prompt_template.format(
         source_text=text,
         subject=settings.subject,
         class_level=settings.class_level,

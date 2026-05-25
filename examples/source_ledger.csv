@@ -1,2 +1,7 @@
-source_id,source_type,owner,commercial_use_allowed,ai_training_allowed,derivative_allowed,reference_only,license_doc,approved_for
-SME_PHY11_CH01_001,SME_OWNED,Atriya Systems,true,true,true,false,SME_ASSIGNMENT_001.pdf,"base_subject;tutor_app;content_generator;app_content;rag;offline"
+source_id,source_type,owner,commercial_use_allowed,ai_training_allowed,derivative_allowed,reference_only,license_doc,approved_for,teacher_id,seniority
+SME_PHY11_CH01_001,SME_OWNED,Atriya Systems,true,true,true,false,SME_ASSIGNMENT_001.pdf,"base_subject;tutor_app;content_generator;app_content;rag;offline",legacy_seed,senior
+SME_PHY11_ASHWIN_001,SME_OWNED,Atriya Systems,true,true,true,false,IP_CONTRACT_ASHWIN.pdf,"base_subject;tutor_app;content_generator;app_content;rag;offline",teacher_ashwin,senior
+SME_CHEM11_PRIYA_001,SME_OWNED,Atriya Systems,true,true,true,false,IP_CONTRACT_PRIYA.pdf,"base_subject;tutor_app;content_generator;app_content;rag;offline",teacher_priya,senior
+SME_BIO11_RAJESH_001,SME_OWNED,Atriya Systems,true,true,true,false,IP_CONTRACT_RAJESH.pdf,"base_subject;tutor_app;content_generator;app_content;rag;offline",teacher_rajesh,senior
+SME_MATH11_KARTIK_001,SME_OWNED,Atriya Systems,true,true,true,false,IP_CONTRACT_KARTIK.pdf,"base_subject;tutor_app;content_generator;app_content;rag;offline",teacher_kartik,senior
+NCERT_REF_PHY11_CH01,REFERENCE_ONLY,NCERT,false,false,false,true,NCERT_LICENSE.pdf,"",ncert_reference,reference
