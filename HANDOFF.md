@@ -2,10 +2,13 @@
 
 **This is the entry point for any agent or operator picking up the factory. Read this in full before touching anything else.**
 
-**Project:** AspireACE ModelOps + ContentOps Factory
+**Project:** Vyasa — AspireACE ModelOps + ContentOps Factory
+**Codename:** Vyasa (व्यास — the legendary compiler of the Vedas; this factory is the compiler of AspireACE's knowledge corpus + training data)
 **Owner:** Piyush Batra · ATRIYA SYSTEMS PVT LTD · CONFIDENTIAL
+**Repository:** https://github.com/Atriya-systems/vyasa
+**Python package (unchanged):** `aspireace_mocf` — kept stable to avoid churning every import path
 **Version:** v1.0.0-M1 (M1 milestone closed) — see CHANGELOG.md
-**Last refreshed:** 2026-05-25 (M1 close)
+**Last refreshed:** 2026-05-25 (M1 close + rebrand to Vyasa)
 
 ---
 

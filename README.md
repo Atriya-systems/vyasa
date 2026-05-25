@@ -1,6 +1,17 @@
-# AspireACE ModelOps + ContentOps Factory v3
+# Vyasa — AspireACE ModelOps + ContentOps Factory
 
-A production-oriented dataset/content factory for AspireACE.
+> *Vyasa (व्यास)* — the legendary sage who compiled the Vedas and the Mahabharata. This factory does the same job for AspireACE: it compiles raw SME source material into structured, governed, ready-to-ship content + training data.
+
+A production-oriented dataset and content factory for the AspireACE NEET/JEE app, owned and operated by Atriya Systems.
+
+**Codename:** Vyasa
+**Version:** v1.0.0-M1 (Foundation + Phase 1 hardened — see [CHANGELOG.md](CHANGELOG.md))
+**Repository:** https://github.com/Atriya-systems/vyasa
+**Status:** Phase 1 production-ready. See [HANDOFF.md](HANDOFF.md) for current state, [PHASE_ROADMAP.md](PHASE_ROADMAP.md) for what comes next.
+
+---
+
+## What it does
 
 It creates and governs **three model-training lanes** plus **app-operational content lanes**:
 

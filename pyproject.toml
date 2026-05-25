@@ -1,7 +1,7 @@
 [project]
-name = "aspireace-modelops-contentops-factory"
+name = "vyasa"
 version = "1.0.0"
-description = "AspireACE ModelOps + ContentOps Factory — elite v1.0 (M1)"
+description = "Vyasa — AspireACE ModelOps + ContentOps Factory (elite v1.0, M1 milestone)"
 requires-python = ">=3.11"
 authors = [{ name = "Atriya Systems", email = "atriya@aspireace.in" }]
 license = { text = "Proprietary — Atriya Systems Pvt Ltd · CONFIDENTIAL" }
