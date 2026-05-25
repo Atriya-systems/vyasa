@@ -1,0 +1,132 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Source Unit",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "unit_id",
+    "source_id",
+    "subject",
+    "class_level",
+    "chapter_no",
+    "chapter_name",
+    "topic",
+    "subtopic",
+    "unit_name",
+    "unit_type",
+    "difficulty",
+    "exam_targets",
+    "source_type",
+    "reference_policy",
+    "coverage_points",
+    "formulas",
+    "common_errors",
+    "prerequisites",
+    "next_units",
+    "target_states",
+    "train_allowed"
+  ],
+  "properties": {
+    "unit_id": {
+      "type": "string"
+    },
+    "source_id": {
+      "type": "string"
+    },
+    "subject": {
+      "type": "string"
+    },
+    "class_level": {
+      "type": "string"
+    },
+    "chapter_no": {
+      "type": "integer"
+    },
+    "chapter_name": {
+      "type": "string"
+    },
+    "topic": {
+      "type": "string"
+    },
+    "subtopic": {
+      "type": "string"
+    },
+    "unit_name": {
+      "type": "string"
+    },
+    "unit_type": {
+      "type": "string",
+      "enum": [
+        "concept",
+        "formula",
+        "procedure",
+        "trick",
+        "misconception",
+        "exam_trap",
+        "instrument",
+        "revision_unit"
+      ]
+    },
+    "difficulty": {
+      "type": "string",
+      "enum": [
+        "basic",
+        "medium",
+        "advanced"
+      ]
+    },
+    "exam_targets": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "source_type": {
+      "type": "string"
+    },
+    "reference_policy": {
+      "type": "string",
+      "enum": [
+        "training_allowed",
+        "reference_only_no_copy",
+        "needs_legal_review"
+      ]
+    },
+    "coverage_points": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "formulas": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "common_errors": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "prerequisites": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "next_units": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "target_states": {
+      "type": "object"
+    },
+    "train_allowed": {
+      "type": "boolean"
+    }
+  }
+}

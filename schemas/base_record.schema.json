@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Base Subject Corpus Record",
+  "type": "object",
+  "required": [
+    "text",
+    "metadata"
+  ],
+  "properties": {
+    "text": {
+      "type": "string",
+      "minLength": 80
+    },
+    "metadata": {
+      "type": "object",
+      "required": [
+        "record_id",
+        "source_unit_id",
+        "lane",
+        "record_type",
+        "quality_status",
+        "train_allowed",
+        "drafted_by"
+      ],
+      "additionalProperties": true
+    }
+  }
+}

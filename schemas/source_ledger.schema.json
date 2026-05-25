@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Source Ledger Row",
+  "type": "object",
+  "required": [
+    "source_id",
+    "source_type",
+    "owner",
+    "commercial_use_allowed",
+    "ai_training_allowed",
+    "derivative_allowed",
+    "reference_only",
+    "approved_for"
+  ],
+  "properties": {
+    "source_id": {
+      "type": "string"
+    },
+    "source_type": {
+      "type": "string",
+      "enum": [
+        "SME_OWNED",
+        "LICENSED",
+        "REFERENCE_ONLY",
+        "PUBLIC_DOMAIN",
+        "CC_BY",
+        "CC0"
+      ]
+    },
+    "owner": {
+      "type": "string"
+    },
+    "commercial_use_allowed": {
+      "type": "boolean"
+    },
+    "ai_training_allowed": {
+      "type": "boolean"
+    },
+    "derivative_allowed": {
+      "type": "boolean"
+    },
+    "reference_only": {
+      "type": "boolean"
+    },
+    "license_doc": {
+      "type": "string"
+    },
+    "approved_for": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

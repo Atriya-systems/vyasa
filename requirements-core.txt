@@ -1,0 +1,7 @@
+openai>=1.40.0
+python-dotenv>=1.0.1
+jsonschema>=4.22.0
+tqdm>=4.66.0
+langgraph>=1.0.0
+typing_extensions>=4.10.0
+scikit-learn>=1.4.0

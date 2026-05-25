@@ -1,0 +1,34 @@
+{
+  "routes": [
+    {
+      "route": "/jarvis/doubt",
+      "surface": "JARVIS_DOUBT",
+      "rag_required": true
+    },
+    {
+      "route": "/content/notes",
+      "surface": "NOTES_BUILDER",
+      "rag_required": true
+    },
+    {
+      "route": "/content/tricks",
+      "surface": "SHORT_TRICK_GENERATOR",
+      "rag_required": false
+    },
+    {
+      "route": "/practice/dpp",
+      "surface": "DPP_GENERATOR",
+      "rag_required": false
+    },
+    {
+      "route": "/revision/cards",
+      "surface": "REVISION_ENGINE",
+      "rag_required": false
+    },
+    {
+      "route": "/grading/feedback",
+      "surface": "HSGE_GRADING_FEEDBACK",
+      "rag_required": true
+    }
+  ]
+}

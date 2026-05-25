@@ -1,0 +1,59 @@
+{
+  "version": "v3.0",
+  "bindings": {
+    "JARVIS_DOUBT": [
+      "ENG-001",
+      "ENG-002",
+      "ENG-007",
+      "ENG-015"
+    ],
+    "NOTES_BUILDER": [
+      "ENG-008",
+      "ENG-013",
+      "ENG-054",
+      "ENG-002"
+    ],
+    "SHORT_TRICK_GENERATOR": [
+      "ENG-008",
+      "EDU-006",
+      "ENG-001"
+    ],
+    "DPP_GENERATOR": [
+      "ENG-013",
+      "ENG-005",
+      "ENG-008"
+    ],
+    "TEST_SERIES": [
+      "ENG-005",
+      "ENG-013",
+      "EDU-011"
+    ],
+    "REVISION_ENGINE": [
+      "ENG-054",
+      "ENG-055",
+      "ENG-014",
+      "ENG-007"
+    ],
+    "HSGE_GRADING_FEEDBACK": [
+      "ENG-003",
+      "ENG-004",
+      "EDU-010",
+      "ENG-018"
+    ],
+    "SPRE_INTERVENTION": [
+      "ENG-007",
+      "EDU-009",
+      "ENG-019",
+      "ENG-045"
+    ],
+    "RAG_RUNTIME": [
+      "ENG-002"
+    ],
+    "OFFLINE_BUNDLE": [
+      "ENG-012"
+    ],
+    "PROVENANCE_DPDP": [
+      "ENG-018"
+    ]
+  }
+}

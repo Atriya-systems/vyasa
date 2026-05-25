@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Judge Response",
+  "type": "object",
+  "required": [
+    "decision",
+    "subject_correctness",
+    "teaching_quality",
+    "source_grounding",
+    "app_usefulness",
+    "issues",
+    "recommended_fix"
+  ],
+  "properties": {
+    "decision": {
+      "type": "string",
+      "enum": [
+        "accept",
+        "fix_required",
+        "human_review",
+        "reject"
+      ]
+    },
+    "subject_correctness": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 5
+    },
+    "teaching_quality": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 5
+    },
+    "source_grounding": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 5
+    },
+    "app_usefulness": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 5
+    },
+    "issues": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "recommended_fix": {
+      "type": "string"
+    }
+  }
+}

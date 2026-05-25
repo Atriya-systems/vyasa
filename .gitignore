@@ -1,0 +1,10 @@
+.venv/
+.env
+__pycache__/
+*.pyc
+runs/
+mlruns/
+artifacts/
+.dvc/cache/
+exports/**/*.jsonl
+exports/**/*.json

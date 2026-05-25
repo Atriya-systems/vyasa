@@ -1,0 +1,10 @@
+{
+  "flags": {
+    "content_factory.v3.enabled": true,
+    "content_factory.require_rights_ledger": true,
+    "content_factory.require_train_allowed": true,
+    "content_factory.llm_judge.enabled": false,
+    "content_factory.offline_bundle.enabled": true,
+    "content_factory.rag_export.enabled": true
+  }
+}

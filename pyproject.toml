@@ -1,0 +1,20 @@
+[project]
+name = "aspireace-modelops-contentops-factory"
+version = "0.3.0"
+description = "AspireACE ModelOps + ContentOps Factory v3"
+requires-python = ">=3.11"
+dependencies = [
+  "openai>=1.40.0",
+  "python-dotenv>=1.0.1",
+  "jsonschema>=4.22.0",
+  "tqdm>=4.66.0",
+  "langgraph>=1.0.0",
+  "typing_extensions>=4.10.0",
+  "scikit-learn>=1.4.0"
+]
+
+[project.scripts]
+aspireace-mocf = "aspireace_mocf.cli:main"
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]

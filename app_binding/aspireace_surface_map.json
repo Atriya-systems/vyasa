@@ -1,0 +1,91 @@
+{
+  "version": "v3.0",
+  "surfaces": [
+    {
+      "surface": "JARVIS_DOUBT",
+      "artifact_types": [
+        "tutor_app",
+        "misconception_card",
+        "hint_ladder",
+        "rag_chunk"
+      ],
+      "requires_explainability": true,
+      "offline_allowed": true
+    },
+    {
+      "surface": "NOTES_BUILDER",
+      "artifact_types": [
+        "notes_card",
+        "base_note",
+        "formula_note"
+      ],
+      "requires_explainability": false,
+      "offline_allowed": true
+    },
+    {
+      "surface": "SHORT_TRICK_GENERATOR",
+      "artifact_types": [
+        "trick_card",
+        "exam_trap_card"
+      ],
+      "requires_explainability": true,
+      "offline_allowed": true
+    },
+    {
+      "surface": "DPP_GENERATOR",
+      "artifact_types": [
+        "dpp_blueprint",
+        "practice_item"
+      ],
+      "requires_explainability": true,
+      "offline_allowed": true
+    },
+    {
+      "surface": "TEST_SERIES",
+      "artifact_types": [
+        "mock_blueprint",
+        "rubric_card"
+      ],
+      "requires_explainability": true,
+      "offline_allowed": false
+    },
+    {
+      "surface": "REVISION_ENGINE",
+      "artifact_types": [
+        "revision_card",
+        "formula_card",
+        "recall_probe"
+      ],
+      "requires_explainability": false,
+      "offline_allowed": true
+    },
+    {
+      "surface": "HSGE_GRADING_FEEDBACK",
+      "artifact_types": [
+        "grading_rubric",
+        "feedback_template"
+      ],
+      "requires_explainability": true,
+      "offline_allowed": false
+    },
+    {
+      "surface": "SPRE_INTERVENTION",
+      "artifact_types": [
+        "misconception_card",
+        "revision_card",
+        "recovery_prompt"
+      ],
+      "requires_explainability": true,
+      "offline_allowed": true
+    },
+    {
+      "surface": "PARENT_TEACHER_SUMMARY",
+      "artifact_types": [
+        "summary_card",
+        "weakness_report"
+      ],
+      "requires_explainability": true,
+      "offline_allowed": true
+    }
+  ]
+}

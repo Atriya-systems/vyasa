@@ -1,0 +1,7 @@
+pipeline:
+  eval_ratio: 0.10
+  similarity_warn_threshold: 0.82
+training:
+  lora_r: 16
+  lora_alpha: 32
+  learning_rate: 0.0002

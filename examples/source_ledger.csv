@@ -1,0 +1,2 @@
+source_id,source_type,owner,commercial_use_allowed,ai_training_allowed,derivative_allowed,reference_only,license_doc,approved_for
+SME_PHY11_CH01_001,SME_OWNED,Atriya Systems,true,true,true,false,SME_ASSIGNMENT_001.pdf,"base_subject;tutor_app;content_generator;app_content;rag;offline"

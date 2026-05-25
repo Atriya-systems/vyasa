@@ -1,0 +1,4 @@
+{
+  "source_id": "SME_PHY11_CH01_001",
+  "owned_sme_text": "Dimensions show how a physical quantity depends on mass, length and time. Velocity is displacement divided by time, so velocity has dimension [LT^-1]. Force equals mass times acceleration, so force has dimension [MLT^-2]. Dimensional analysis can check dimensional consistency, derive relations up to dimensionless constants, and detect impossible equations. It cannot determine numerical constants such as 2 or pi, and cannot prove a formula is physically correct. Significant figures represent meaningful digits in a measured value. Accuracy means closeness to true value, while precision means closeness among repeated measurements."
+}

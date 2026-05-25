@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RAG Chunk",
+  "type": "object",
+  "required": [
+    "chunk_id",
+    "source_unit_id",
+    "text",
+    "metadata"
+  ],
+  "properties": {
+    "chunk_id": {
+      "type": "string"
+    },
+    "source_unit_id": {
+      "type": "string"
+    },
+    "text": {
+      "type": "string"
+    },
+    "metadata": {
+      "type": "object"
+    }
+  }
+}
