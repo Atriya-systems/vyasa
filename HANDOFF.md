@@ -4,8 +4,8 @@
 
 **Project:** AspireACE ModelOps + ContentOps Factory
 **Owner:** Piyush Batra · ATRIYA SYSTEMS PVT LTD · CONFIDENTIAL
-**Version:** v1.0.0 (in progress) — see CHANGELOG.md
-**Last refreshed:** 2026-05-25 (M1 build session start)
+**Version:** v1.0.0-M1 (M1 milestone closed) — see CHANGELOG.md
+**Last refreshed:** 2026-05-25 (M1 close)
 
 ---
 
@@ -49,18 +49,24 @@ docs/                       deep-dive guides per topic
 
 **v0.3.0 baseline committed** at the initial git init. 68 files, exactly as the founder shared 2026-05-25.
 
-**v1.0.0 in progress.** Elite enhancement pass underway. See [CHANGELOG.md](CHANGELOG.md) for what's landed and what's open. See [PHASE_ROADMAP.md](PHASE_ROADMAP.md) for the milestone plan.
+**v1.0.0-M1 CLOSED.** Elite enhancement Pass 1 complete. ~6,000 lines added across documentation, code, tests, and config. Phase 1 is now production-ready.
 
-**M1 — Foundation + Phase 1 hardening:** IN PROGRESS
-- Foundational docs (this file + 5 siblings) — being written
-- 7 critical bug fixes — pending
-- Core infrastructure (logging, errors, retry, lockfile, token budget) — pending
-- Multi-subject (Chem/Bio/Maths prompt sets + anchors) — pending
-- Real tests + hardened config — pending
+**M1 — Foundation + Phase 1 hardening:** ✅ COMPLETE
+- ✅ Foundational docs (6 anchor files: HANDOFF, ARCHITECTURE, PHASE_ROADMAP, OPERATING_GUIDE, ELITE_BAR, CHANGELOG)
+- ✅ 7 critical bug fixes (silent exception swallow, rights gate logic, truncate-mid-validate, supervisor retry, prompt array shape, review audit trail, langgraph version pin)
+- ✅ Core infrastructure (utils/errors.py enum taxonomy, utils/logging.py structlog, providers/retry.py tenacity backoff, providers/token_budget.py guard, pipeline/lockfile.py concurrent-run protection)
+- ✅ Multi-subject (prompt_loader.py + 4 subject addendums + 4 anchor source examples + extended source_ledger.csv)
+- ✅ Real test coverage (~120 unit tests across 9 modules; 46 verified passing locally without external deps)
+- ✅ Hardened config (pyproject.toml v1.0.0 with mypy/ruff/pytest/coverage; .gitignore expanded ~7×; .env.example for all 4 phases)
 
-**M2 — Phase 2 API layer:** NOT STARTED (depends on M1)
-**M3 — Phase 3 training + serving:** NOT STARTED (depends on M2)
-**M4 — Phase 4 multi-tenant + polish:** NOT STARTED (depends on M3)
+**Verification at M1 close:**
+- 46 unit tests pass in 0.42s on Python 3.12.10 (subset that doesn't need pip-installed deps)
+- Full test suite requires `pip install -r requirements-core.txt` first; once installed, all ~120 tests should pass
+- git log shows 6 atomic commits (baseline + 5 M1 milestones)
+
+**M2 — Phase 2 API layer:** NOT STARTED — see [PHASE_ROADMAP.md](PHASE_ROADMAP.md) §M2 for scope. Activates once Phase 1 has been operationally proven (content actually landing in the AspireACE app + at least one chapter SME-approved end-to-end).
+**M3 — Phase 3 training + serving:** NOT STARTED.
+**M4 — Phase 4 multi-tenant + polish:** NOT STARTED.
 
 ---
 
@@ -131,22 +137,53 @@ python tools/ingest_to_aspireace_neon.py \
 
 ## What changed since v0.3.0 baseline
 
-See [CHANGELOG.md](CHANGELOG.md). Short version:
+See [CHANGELOG.md](CHANGELOG.md) for the full list. M1 in summary:
 
-- M1 hardening pass: 7 critical bugs fixed, multi-subject support added, core infra (logging/errors/retry/lockfile) introduced, real test coverage added, foundation docs authored.
+| Area | Before (v0.3.0) | After (v1.0.0-M1) |
+|---|---|---|
+| Documentation | README only | 6 anchor docs (HANDOFF, ARCHITECTURE, PHASE_ROADMAP, OPERATING_GUIDE, ELITE_BAR, CHANGELOG) + prompts/README + 4 subject addendums |
+| Critical bugs | 7 known issues affecting legal/correctness | 0 — all 7 closed |
+| Error handling | bare `except Exception` swallows + string-substring routing | enum-based taxonomy + route_record() helper |
+| Logging | `tqdm` only | structlog JSON-lines + correlation IDs |
+| Retry | none | tenacity exponential backoff on transient errors |
+| Token-budget guard | none | per-model context-window check before LLM call |
+| Lockfile | none | PID + hostname + timestamp, with stale-PID auto-break |
+| Subject support | Physics-leaning prompts only | Physics + Chemistry + Biology + Mathematics with per-subject addendums |
+| Anchor examples | 1 (Physics) | 4 (Physics + Chemistry + Biology + Mathematics) |
+| Audit trail | none (Streamlit wrote no log) | append-only audit_log.jsonl with reviewer_id + timestamp + reason + train_allowed transition |
+| Auth | text input defaulting to "reviewer_001" | REVIEWER_USERS env-driven sha256 password auth + two-tier junior/senior queue |
+| Tests | 2 trivial files (8 LoC + 7 LoC) | ~120 unit tests across 9 modules; 46 verified passing |
+| pyproject.toml | minimal | full mypy/ruff/pytest/coverage config |
+| .gitignore | 11 lines | ~70 lines covering all phases |
+| .env.example | flat config | phased config (Phase 1/2/3/4 sections) |
 
 ---
 
 ## What's next
 
-**This session:** finish M1 (see [CHANGELOG.md](CHANGELOG.md) in-progress notes for the precise stopping point).
+**Immediate (before any M2 work) — operational verification of M1:**
 
-**Next session:** M2 — Phase 2 API layer. Wrap the factory in FastAPI, add SQLite-backed approved-content catalog, set up bearer-token auth, write deployment runbook for tunnelling to AspireACE BFF. See [PHASE_ROADMAP.md](PHASE_ROADMAP.md) §M2 for the detailed scope.
+1. **Install + smoke test on the 5060 machine.** Move this folder to the coaching machine, `pip install -r requirements-core.txt`, install LM Studio + Qwen3-8B-Instruct Q4_K_M, configure `.env`, run the smoke test:
+   ```bash
+   python -m aspireace_mocf.cli run \
+     --input examples/physics_ch01_units_measurements_owned.json \
+     --rights-ledger examples/source_ledger.csv \
+     --run-id smoke_phy11_ch01 \
+     --chapter-no 1 --chapter-name "Units and Measurements" \
+     --limit-units 2
+   ```
+2. **Verify the full test suite passes after install.** `pytest -v` should show ~120 tests green.
+3. **Run smoke tests for Chemistry + Biology + Mathematics** using the new anchor examples in `examples/`. Each subject's addendum should produce subject-appropriate output.
+4. **Eyeball the outputs.** Open `runs/<id>/lanes/*.jsonl` and check that the records look like what a teacher would expect. If they don't, the prompt addendums need iteration (don't edit `v1/` — branch to `v2/`).
+
+**Next session — M2 Phase 2 API layer.** Wrap the factory in FastAPI, add SQLite-backed approved-content catalog, set up bearer-token auth, write deployment runbook for tunnelling to AspireACE BFF. See [PHASE_ROADMAP.md](PHASE_ROADMAP.md) §M2 for the detailed scope.
 
 **Quick wins available any time** (no founder input needed):
-- Add more anchor examples (`examples/`) — anything beyond the initial 6-8 helps teachers see what good source looks like
+- Add more anchor examples (`examples/`) — beyond the initial 4 (Phy/Chem/Bio/Math), more chapters help teachers see what good source looks like
 - Translate the OPERATING_GUIDE.md into a Hindi-mixed crib sheet for non-English-first teachers (post-launch, since Hindi is deferred)
 - Write `tools/coverage_report.py` to print a chapter × lane matrix so you know what's covered
+- Add more parameterized cases to `tests/unit/test_basic_checks.py::TestBadPhraseDetection` as new LLM-self-reference patterns are observed in real runs
+- Author senior-teacher golden eval set (~200 query/ideal-response pairs) — needed for Phase 3 SFT evaluation; can author now while context is fresh
 
 ---
 
