@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Tutor Eval Golden Record",
+  "description": "One senior-teacher-authored query/ideal-response pair used to evaluate the trained tutor LLM. Stored versioned + hash-pinned in eval/golden_sets/.",
+  "type": "object",
+  "required": [
+    "record_id",
+    "query",
+    "ideal_response",
+    "subject",
+    "chapter_no",
+    "chapter_name",
+    "difficulty",
+    "dimensions",
+    "author_teacher_id",
+    "authored_at_utc"
+  ],
+  "properties": {
+    "record_id": {
+      "type": "string",
+      "description": "Stable ID, e.g. GOLD_PHY11_CH01_001"
+    },
+    "query": {
+      "type": "string",
+      "minLength": 5,
+      "description": "Student-style question the tutor should be able to answer."
+    },
+    "ideal_response": {
+      "type": "string",
+      "minLength": 30,
+      "description": "Senior-teacher-authored gold-standard tutor response."
+    },
+    "subject": {
+      "type": "string",
+      "enum": ["Physics", "Chemistry", "Biology", "Mathematics"]
+    },
+    "chapter_no": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "chapter_name": {
+      "type": "string"
+    },
+    "topic": {
+      "type": "string"
+    },
+    "subtopic": {
+      "type": "string"
+    },
+    "difficulty": {
+      "type": "string",
+      "enum": ["basic", "medium", "advanced"]
+    },
+    "exam_targets": {
+      "type": "array",
+      "items": { "type": "string", "enum": ["JEE", "NEET", "JEE-Mains", "JEE-Adv"] }
+    },
+    "dimensions": {
+      "type": "object",
+      "description": "The 4 dimensions a tutor response is scored on. Each score 0-5 represents the IDEAL response's hypothetical scoring — used for normalising eval-harness scores.",
+      "required": ["subject_correctness", "teaching_quality", "source_grounding", "app_usefulness"],
+      "properties": {
+        "subject_correctness": { "type": "integer", "minimum": 0, "maximum": 5 },
+        "teaching_quality":    { "type": "integer", "minimum": 0, "maximum": 5 },
+        "source_grounding":    { "type": "integer", "minimum": 0, "maximum": 5 },
+        "app_usefulness":      { "type": "integer", "minimum": 0, "maximum": 5 }
+      }
+    },
+    "common_misconceptions_addressed": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Optional. Specific misconceptions the ideal response is expected to address."
+    },
+    "required_concepts": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Optional. Concepts/formulas/terms the ideal response is expected to reference."
+    },
+    "author_teacher_id": {
+      "type": "string",
+      "description": "Senior teacher who authored this golden record. Trust anchor."
+    },
+    "authored_at_utc": {
+      "type": "string",
+      "description": "ISO-8601 timestamp when the record was authored."
+    },
+    "notes_to_evaluator": {
+      "type": "string",
+      "description": "Optional. Author notes for the LLM-judge to weigh (e.g. 'penalise heavily if the response omits the sign convention')."
+    }
+  }
+}
