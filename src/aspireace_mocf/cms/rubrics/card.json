@@ -1,0 +1,54 @@
+{
+  "content_type": "card",
+  "version": "1.0.0",
+  "description": "Generic review rubric for app-content cards that don't have a specialized rubric (misconception, dpp_blueprint, grading_rubric, revision_card).",
+  "criteria": [
+    {
+      "key": "accuracy",
+      "label": "Content accuracy",
+      "description": "All factual / mathematical / scientific claims correct.",
+      "weight": 0.30,
+      "scale": "1-5",
+      "minimum_pass": 4
+    },
+    {
+      "key": "purpose_fit",
+      "label": "Purpose fit",
+      "description": "Card actually does what its card_type promises (a misconception card surfaces a misconception; a revision card supports recall; a rubric scaffolds grading).",
+      "weight": 0.25,
+      "scale": "1-5",
+      "minimum_pass": 4
+    },
+    {
+      "key": "clarity",
+      "label": "Clarity",
+      "description": "Title accurately describes body. Body is scannable. No filler text.",
+      "weight": 0.20,
+      "scale": "1-5",
+      "minimum_pass": 4
+    },
+    {
+      "key": "completeness",
+      "label": "Completeness",
+      "description": "Card stands alone. Student understands without needing to also pull up 3 other cards.",
+      "weight": 0.15,
+      "scale": "1-5",
+      "minimum_pass": 3
+    },
+    {
+      "key": "level_appropriate",
+      "label": "Level appropriateness",
+      "description": "Right depth for Class 11/12. Not condescending, not over the head.",
+      "weight": 0.10,
+      "scale": "1-5",
+      "minimum_pass": 3
+    }
+  ],
+  "approval_rule": "All criteria meet minimum_pass.",
+  "common_flag_types": [
+    "factual_error",
+    "pedagogical_issue",
+    "unclear_wording",
+    "level_inappropriate"
+  ]
+}

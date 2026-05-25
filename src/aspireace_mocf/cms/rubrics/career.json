@@ -1,0 +1,53 @@
+{
+  "content_type": "career",
+  "version": "1.0.0",
+  "description": "Review rubric for career-profile records (per-career profile: branch, salary, trajectory, employers, growth).",
+  "criteria": [
+    {
+      "key": "factual_currency",
+      "label": "Factual currency",
+      "description": "Salary + employer + growth numbers are recent (within 12 months) and cite-able to a public source.",
+      "weight": 0.35,
+      "scale": "1-5",
+      "minimum_pass": 4
+    },
+    {
+      "key": "indian_market_relevance",
+      "label": "Indian market relevance",
+      "description": "Numbers + employers + paths reflect Indian market reality, not global / US-centric. Salary in INR, employers Indian or with Indian presence.",
+      "weight": 0.25,
+      "scale": "1-5",
+      "minimum_pass": 5
+    },
+    {
+      "key": "honesty_about_uncertainty",
+      "label": "Honesty about uncertainty",
+      "description": "Where data is sparse or projection-heavy (5yr trajectory, 'growth outlook'), the uncertainty is stated, not papered over.",
+      "weight": 0.20,
+      "scale": "1-5",
+      "minimum_pass": 4
+    },
+    {
+      "key": "no_misleading_aspiration",
+      "label": "No misleading aspiration",
+      "description": "Does not over-sell. A career profile that says 'every NIT CSE grad earns 50LPA' is misleading; one that gives ranges with median + percentiles is honest.",
+      "weight": 0.15,
+      "scale": "1-5",
+      "minimum_pass": 5
+    },
+    {
+      "key": "actionable",
+      "label": "Actionable for student",
+      "description": "Student can answer: 'what should I do this year to make this career path possible?'",
+      "weight": 0.05,
+      "scale": "1-5",
+      "minimum_pass": 3
+    }
+  ],
+  "approval_rule": "indian_market_relevance + no_misleading_aspiration MUST be 5/5. Career counselor sign-off + alumni cross-check required.",
+  "common_flag_types": [
+    "factual_error",
+    "level_inappropriate",
+    "language_issue"
+  ]
+}

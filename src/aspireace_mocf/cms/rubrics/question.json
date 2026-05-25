@@ -1,0 +1,55 @@
+{
+  "content_type": "question",
+  "version": "1.0.0",
+  "description": "Review rubric for DPP / mock / diagnostic question records (question bank items). Used by SMEs during sme_reviewed → senior_approved transitions.",
+  "criteria": [
+    {
+      "key": "subject_correctness",
+      "label": "Subject correctness",
+      "description": "Is the question factually correct? Is the marked answer actually right under the stated conditions?",
+      "weight": 0.35,
+      "scale": "1-5",
+      "minimum_pass": 4
+    },
+    {
+      "key": "clarity",
+      "label": "Statement clarity",
+      "description": "Is the question stem unambiguous? Are all symbols/units defined? Could a competent student misread it?",
+      "weight": 0.20,
+      "scale": "1-5",
+      "minimum_pass": 4
+    },
+    {
+      "key": "difficulty_calibration",
+      "label": "Difficulty calibration",
+      "description": "Does the assigned difficulty tag (1-5) match how hard the question actually is? Junior+Senior may disagree; senior wins.",
+      "weight": 0.15,
+      "scale": "1-5",
+      "minimum_pass": 3
+    },
+    {
+      "key": "solution_quality",
+      "label": "Solution quality",
+      "description": "Is the step-by-step solution complete, pedagogically clear, free of leaps? Does it address why the right answer is right + why each distractor is wrong?",
+      "weight": 0.20,
+      "scale": "1-5",
+      "minimum_pass": 4
+    },
+    {
+      "key": "exam_alignment",
+      "label": "NEET/JEE alignment",
+      "description": "Does the question match real exam pattern (length, distractor style, common-trap structure)? Or does it feel synthetic?",
+      "weight": 0.10,
+      "scale": "1-5",
+      "minimum_pass": 3
+    }
+  ],
+  "approval_rule": "All criteria with minimum_pass must be met. Senior reviewer overrides junior on disagreement.",
+  "common_flag_types": [
+    "factual_error",
+    "solution_error",
+    "level_inappropriate",
+    "unclear_wording",
+    "formula_error"
+  ]
+}
