@@ -1,20 +1,126 @@
 [project]
 name = "aspireace-modelops-contentops-factory"
-version = "0.3.0"
-description = "AspireACE ModelOps + ContentOps Factory v3"
+version = "1.0.0"
+description = "AspireACE ModelOps + ContentOps Factory — elite v1.0 (M1)"
 requires-python = ">=3.11"
+authors = [{ name = "Atriya Systems", email = "atriya@aspireace.in" }]
+license = { text = "Proprietary — Atriya Systems Pvt Ltd · CONFIDENTIAL" }
 dependencies = [
   "openai>=1.40.0",
   "python-dotenv>=1.0.1",
   "jsonschema>=4.22.0",
   "tqdm>=4.66.0",
-  "langgraph>=1.0.0",
+  "langgraph>=0.2.0,<2.0.0",
+  "langgraph-checkpoint-sqlite>=2.0.0",
   "typing_extensions>=4.10.0",
-  "scikit-learn>=1.4.0"
+  "scikit-learn>=1.4.0",
+  "tenacity>=8.2.0",
+  "structlog>=24.1.0",
+  "pydantic>=2.5.0",
+]
+
+[project.optional-dependencies]
+training = [
+  "torch>=2.2.0",
+  "transformers>=4.45.0",
+  "datasets>=2.20.0",
+  "trl>=0.19.0",
+  "peft>=0.13.0",
+  "accelerate>=0.33.0",
+  "mlflow>=2.14.0",
+]
+review = [
+  "streamlit>=1.36.0",
+  "pandas>=2.2.0",
+]
+dev = [
+  "pytest>=8.0.0",
+  "pytest-cov>=5.0.0",
+  "mypy>=1.10.0",
+  "ruff>=0.5.0",
 ]
 
 [project.scripts]
 aspireace-mocf = "aspireace_mocf.cli:main"
 
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+# ----- pytest -----
 [tool.pytest.ini_options]
 pythonpath = ["src"]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+  "--strict-markers",
+  "-ra",
+]
+markers = [
+  "integration: tests that exercise the full pipeline against a real LLM",
+  "slow: tests that take more than 10 seconds",
+]
+
+# ----- mypy -----
+[tool.mypy]
+python_version = "3.11"
+strict = false  # progressive — tighten as the codebase stabilises
+ignore_missing_imports = true  # external libs lack stubs
+warn_unused_ignores = true
+warn_redundant_casts = true
+warn_no_return = true
+disallow_untyped_defs = false  # turn on per-module as we add types
+exclude = ["runs/", "build/", "dist/", ".venv/"]
+
+[[tool.mypy.overrides]]
+module = ["aspireace_mocf.utils.errors", "aspireace_mocf.providers.token_budget", "aspireace_mocf.pipeline.lockfile", "aspireace_mocf.pipeline.prompt_loader"]
+disallow_untyped_defs = true  # M1-new modules — typed from the start
+
+# ----- ruff -----
+[tool.ruff]
+target-version = "py311"
+line-length = 120
+extend-exclude = ["runs", "build", "dist", ".venv"]
+
+[tool.ruff.lint]
+select = [
+  "E",   # pycodestyle errors
+  "F",   # pyflakes
+  "W",   # pycodestyle warnings
+  "I",   # isort
+  "B",   # flake8-bugbear
+  "UP",  # pyupgrade
+  "RUF", # ruff-specific
+]
+ignore = [
+  "E501",  # line too long (handled by formatter; long lines are intentional in places)
+  "B008",  # function call in default arg (pydantic + FastAPI rely on this)
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["E402"]  # tests sometimes set up sys.path before imports
+
+# ----- coverage -----
+[tool.coverage.run]
+source = ["aspireace_mocf"]
+omit = [
+  "*/tests/*",
+  "*/training/*",      # training scripts run against GPU; mock or skip in CI
+  "*/serving/*",       # serving config files; not pure-Python
+]
+
+[tool.coverage.report]
+exclude_lines = [
+  "pragma: no cover",
+  "raise NotImplementedError",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]

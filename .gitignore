@@ -1,10 +1,86 @@
-.venv/
-.env
+# --- Python ---
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+*.egg
+build/
+dist/
+.eggs/
+
+# --- Virtualenvs ---
+.venv/
+venv/
+env/
+ENV/
+
+# --- IDE / editor ---
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# --- Environment / secrets ---
+.env
+.env.local
+.env.*.local
+*.key
+*.pem
+*.crt
+
+# --- Factory runtime outputs ---
 runs/
+factory_runs/
+
+# --- Lockfiles ---
+*.lock
+
+# --- Catalog / serving DBs (built per-run; do not commit) ---
+*.db
+*.sqlite
+*.sqlite3
+
+# --- Logs ---
+logs/
+*.log
+
+# --- MLflow / DVC ---
 mlruns/
+.dvc/
+.dvcignore.cache/
+
+# --- Test outputs ---
+.coverage
+htmlcov/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# --- OS-specific noise ---
+Desktop.ini
+
+# --- Source material (IP-sensitive — never commit raw teacher notes) ---
+# By default, examples/ IS committed because it contains anchor examples.
+# Production source corpora go in content/ which IS gitignored.
+content/
+source_inbox/
+
+# --- Trained model weights (large, ship to S3 / HF Hub instead) ---
 artifacts/
-.dvc/cache/
-exports/**/*.jsonl
-exports/**/*.json
+checkpoints/
+adapters/
+*.safetensors
+*.bin
+*.gguf
+*.ggml
+
+# --- Streamlit local state ---
+.streamlit/
+
+# --- Misc ---
+*.bak
+*.orig
+*.tmp
