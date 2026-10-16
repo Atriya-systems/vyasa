@@ -18,7 +18,6 @@ from pathlib import Path
 from aspireace_mocf.settings import PROJECT_ROOT
 from aspireace_mocf.utils.logging import get_logger
 
-
 _log = get_logger(__name__)
 
 _SUBJECT_SEPARATOR = "\n\n---\n## Subject-specific guidance\n\n"
@@ -87,7 +86,7 @@ def load_prompt(filename: str, subject: str | None = None, style: str | None = N
         FileNotFoundError: when the base prompt is missing entirely.
 
     The result is LRU-cached because prompt templates don't change at runtime;
-    re-reading them on every LLM call wastes ~0.5 ms × thousands of records.
+    re-reading them on every LLM call wastes ~0.5 ms x thousands of records.
     """
     base_path = _resolve_base_path(filename)
     text = base_path.read_text(encoding="utf-8")

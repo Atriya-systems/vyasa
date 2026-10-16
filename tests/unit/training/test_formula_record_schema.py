@@ -1,9 +1,6 @@
 """Tests for the M4 formula_record.schema.json — the structured formula library schema."""
 from __future__ import annotations
 
-import json
-from pathlib import Path
-
 import pytest
 
 from aspireace_mocf.settings import PROJECT_ROOT

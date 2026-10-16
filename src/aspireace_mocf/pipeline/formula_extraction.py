@@ -33,7 +33,6 @@ from aspireace_mocf.utils.jsonio import read_jsonl, write_jsonl
 from aspireace_mocf.utils.logging import get_logger
 from aspireace_mocf.validators.schema_validator import array_schema, load_schema, validate_item
 
-
 _log = get_logger(__name__)
 
 

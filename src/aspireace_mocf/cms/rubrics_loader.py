@@ -16,7 +16,6 @@ from typing import Any
 
 from aspireace_mocf.utils.logging import get_logger
 
-
 _log = get_logger(__name__)
 
 

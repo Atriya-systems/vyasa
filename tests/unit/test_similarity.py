@@ -1,10 +1,7 @@
 """Tests for validators/similarity.py — TF-IDF source-similarity cache."""
 from __future__ import annotations
 
-import pytest
-
 from aspireace_mocf.validators.similarity import SourceSimilarityCache, max_similarity_to_sources
-
 
 SOURCE = (
     "Dimensions show how a physical quantity depends on mass, length and time. "

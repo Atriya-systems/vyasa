@@ -22,18 +22,17 @@ Version: 1.0.0 (M4)
 from __future__ import annotations
 
 import json
-from enum import Enum
+from enum import StrEnum
 from typing import Any
 
 from aspireace_mocf.cms.storage import _now, connect
 from aspireace_mocf.utils.errors import FactoryError
 from aspireace_mocf.utils.logging import get_logger
 
-
 _log = get_logger(__name__)
 
 
-class ContentState(str, Enum):
+class ContentState(StrEnum):
     DRAFT = "draft"
     MACHINE_VALIDATED = "machine_validated"
     SME_REVIEWED = "sme_reviewed"
@@ -43,7 +42,7 @@ class ContentState(str, Enum):
     RETIRED = "retired"
 
 
-class ActorRole(str, Enum):
+class ActorRole(StrEnum):
     SYSTEM = "system"          # automated machine validation
     JUNIOR_TEACHER = "junior"  # can stage for senior approval
     SENIOR_TEACHER = "senior"  # can flip train_allowed; only ones who can senior_approved
@@ -93,7 +92,7 @@ class TransitionError(FactoryError):
     """Invalid state transition (illegal edge or unauthorized actor)."""
 
 
-class TransitionErrorCode(str, Enum):
+class TransitionErrorCode(StrEnum):
     UNKNOWN_RECORD = "unknown_record"
     ILLEGAL_TRANSITION = "illegal_transition"
     UNAUTHORIZED_ROLE = "unauthorized_role"

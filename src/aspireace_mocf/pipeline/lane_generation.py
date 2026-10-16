@@ -16,7 +16,7 @@ Above-the-bar additions:
 
 Owner: ATRIYA / AspireACE Factory
 Version: 1.0.0 (M1)
-SLA: generate one lane × 5 units × 5 records-per-unit: <= 6 minutes on
+SLA: generate one lane x 5 units x 5 records-per-unit: <= 6 minutes on
 Qwen3-8B Q4_K_M (counts as ~25 LLM calls of moderate size).
 """
 from __future__ import annotations
@@ -31,12 +31,10 @@ from aspireace_mocf.pipeline.ids import card_id, record_id
 from aspireace_mocf.pipeline.prompt_loader import load_prompt
 from aspireace_mocf.providers.llm import LLMClient
 from aspireace_mocf.settings import PROJECT_ROOT, Settings
-from aspireace_mocf.utils.errors import VerificationErrorCode
 from aspireace_mocf.utils.jsonio import read_jsonl, write_jsonl
 from aspireace_mocf.utils.logging import get_logger
 from aspireace_mocf.validators.basic_checks import record_errors
 from aspireace_mocf.validators.schema_validator import array_schema, load_schema, validate_item
-
 
 _log = get_logger(__name__)
 
