@@ -6,7 +6,7 @@ output must be original phrasing, not source verbatim.
 
 Bug fixes vs v0.3.0 baseline:
 - Bug #11 fix: the old function built a fresh TfidfVectorizer per call,
-  meaning for N records × M source texts it did N × M vectorizations of the
+  meaning for N records x M source texts it did N x M vectorizations of the
   source. Now sources are precomputed once via the `SourceSimilarityCache`
   class and reused.
 
@@ -40,7 +40,9 @@ class SourceSimilarityCache:
         self.clean_sources = [s for s in sources if s.strip()]
         if self.clean_sources:
             # Fit on the source corpus only; record text is transformed at query time.
-            self._vectorizer = TfidfVectorizer(ngram_range=(3, 5), analyzer="word")
+            # Unigrams retain a useful signal for short paraphrases, while the
+            # higher-order terms still reward copied phrases over loose overlap.
+            self._vectorizer = TfidfVectorizer(ngram_range=(1, 5), analyzer="word")
             self._source_vectors = self._vectorizer.fit_transform(self.clean_sources)
         else:
             self._vectorizer = None

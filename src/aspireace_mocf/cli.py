@@ -23,8 +23,8 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 from pathlib import Path
-
 
 # ---------- Phase 1 commands (carried from M1) ----------
 
@@ -233,7 +233,7 @@ def cmd_eval_model(args: argparse.Namespace) -> None:
         # The simplest path: ask the model to just generate text.
         resp = target_client.client.chat.completions.create(
             model=target_settings.model_name,
-            messages=[{"role": "system", "content": "You are an AspireACE NEET/JEE tutor."}] + messages,
+            messages=[{"role": "system", "content": "You are an AspireACE NEET/JEE tutor."}, *messages],
             temperature=0.1,
             max_tokens=1024,
         )
@@ -283,6 +283,34 @@ def cmd_golden_freeze(args: argparse.Namespace) -> None:
     from aspireace_mocf.training.golden_set import freeze_version
     manifest = freeze_version(version=args.version, notes=args.notes)
     print(json.dumps(manifest, indent=2))
+
+
+def _authenticated_cms_actor(args: argparse.Namespace):
+    from aspireace_mocf.cms.auth import authenticate_reviewer
+    return authenticate_reviewer(args.reviewer_id, os.environ.get(args.password_env, ""))
+
+
+def cmd_cms_register(args: argparse.Namespace) -> None:
+    from aspireace_mocf.cms.service import register_draft
+    from aspireace_mocf.utils.jsonio import read_jsonl
+    actor = _authenticated_cms_actor(args)
+    registered = 0
+    for row in read_jsonl(Path(args.input)):
+        metadata = row.get("metadata", {})
+        content_id = row.get("formula_id") or row.get("card_id") or row.get("content_id")
+        record_type = metadata.get("record_type") or row.get("record_type") or args.record_type
+        if not isinstance(content_id, str) or not content_id or not isinstance(record_type, str) or not record_type:
+            raise ValueError("CMS record requires an id and record type")
+        register_draft(content_id=content_id, record_type=record_type, lane=args.lane, payload=row, actor=actor, db_path=Path(args.db))
+        registered += 1
+    print(json.dumps({"registered": registered, "state": "draft"}))
+
+
+def cmd_cms_transition(args: argparse.Namespace) -> None:
+    from aspireace_mocf.cms.service import transition_authenticated
+    actor = _authenticated_cms_actor(args)
+    record = transition_authenticated(args.content_id, to_state=args.to_state, actor=actor, reason=args.reason, db_path=Path(args.db))
+    print(json.dumps(record, indent=2, default=str))
 
 
 # ---------- main ----------
@@ -366,6 +394,24 @@ def main() -> None:
     p.add_argument("--version", default=None, help="Explicit version name (default: auto next vN).")
     p.add_argument("--notes", default="")
     p.set_defaults(func=cmd_golden_freeze)
+
+    for command, handler, help_text in [
+        ("cms-register", cmd_cms_register, "Register JSONL records into CMS at draft state."),
+        ("cms-transition", cmd_cms_transition, "Apply an authenticated CMS lifecycle transition."),
+    ]:
+        p = sub.add_parser(command, help=help_text)
+        p.add_argument("--db", required=True)
+        p.add_argument("--reviewer-id", required=True)
+        p.add_argument("--password-env", default="CMS_REVIEWER_PASSWORD")
+        if command == "cms-register":
+            p.add_argument("--input", required=True)
+            p.add_argument("--lane", required=True)
+            p.add_argument("--record-type", default="")
+        else:
+            p.add_argument("--content-id", required=True)
+            p.add_argument("--to-state", required=True)
+            p.add_argument("--reason", default="")
+        p.set_defaults(func=handler)
 
     args = parser.parse_args()
     args.func(args)

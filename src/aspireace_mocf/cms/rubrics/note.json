@@ -1,0 +1,54 @@
+{
+  "content_type": "note",
+  "version": "1.0.0",
+  "description": "Review rubric for notes-library cards (chapter notes, concept cards, one-shot summaries, glossary cards).",
+  "criteria": [
+    {
+      "key": "accuracy",
+      "label": "Factual accuracy",
+      "description": "All statements are correct per NCERT + standard reference. No hallucinated facts.",
+      "weight": 0.30,
+      "scale": "1-5",
+      "minimum_pass": 4
+    },
+    {
+      "key": "pedagogical_clarity",
+      "label": "Pedagogical clarity",
+      "description": "Builds the idea up well. Defines terms before using them. Structure is scannable. Right depth for Class 11/12.",
+      "weight": 0.25,
+      "scale": "1-5",
+      "minimum_pass": 4
+    },
+    {
+      "key": "appropriate_depth",
+      "label": "Appropriate depth",
+      "description": "Neither too shallow (just NCERT paraphrase) nor too deep (PhD-level tangent). Hits the JEE/NEET sweet spot.",
+      "weight": 0.20,
+      "scale": "1-5",
+      "minimum_pass": 3
+    },
+    {
+      "key": "source_grounding",
+      "label": "Source grounding",
+      "description": "Stays close to NCERT + SME source. No invented anecdotes. Citations / chapter refs where appropriate.",
+      "weight": 0.15,
+      "scale": "1-5",
+      "minimum_pass": 4
+    },
+    {
+      "key": "style_fit",
+      "label": "Style fit (if A/B variant)",
+      "description": "If the card carries explanation_style, does the prose actually match the style (concise / detailed / analogy_led)?",
+      "weight": 0.10,
+      "scale": "1-5",
+      "minimum_pass": 3
+    }
+  ],
+  "approval_rule": "All min-pass criteria met. Style-fit criterion only weighted when explanation_style is set.",
+  "common_flag_types": [
+    "factual_error",
+    "pedagogical_issue",
+    "level_inappropriate",
+    "unclear_wording"
+  ]
+}

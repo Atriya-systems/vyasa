@@ -30,15 +30,15 @@ import shutil
 from pathlib import Path
 from typing import Any
 
-from aspireace_mocf.pipeline.approve import approve_file
 from aspireace_mocf.pipeline.export import copy_json_file
+from aspireace_mocf.pipeline.formula_extraction import extract_formulas
 from aspireace_mocf.pipeline.lane_generation import generate_app_lane, generate_training_lane
+from aspireace_mocf.pipeline.lockfile import RunLock
 from aspireace_mocf.pipeline.manifest import write_manifest
 from aspireace_mocf.pipeline.paths import RunPaths
 from aspireace_mocf.pipeline.rag_offline import build_offline_bundle, build_rag_chunks
 from aspireace_mocf.pipeline.source_units import build_source_units
 from aspireace_mocf.pipeline.verify import verify_lane
-from aspireace_mocf.pipeline.lockfile import RunLock
 from aspireace_mocf.providers.llm import LLMClient
 from aspireace_mocf.settings import Settings
 from aspireace_mocf.utils.errors import PipelineError, PipelineErrorCode
@@ -46,7 +46,6 @@ from aspireace_mocf.utils.jsonio import read_json, write_json
 from aspireace_mocf.utils.logging import get_logger
 from aspireace_mocf.utils.text import extract_source_id
 from aspireace_mocf.validators.rights_validator import load_rights_ledger, validate_source_for_lane
-
 
 _log = get_logger(__name__)
 
@@ -205,6 +204,26 @@ def run_pipeline(
             )
             _log.info("app_lane_completed", run_id=run_id, lane=lane, counts=counts[lane])
 
+        # M4: Formula extraction. Runs after app lanes complete; gated by
+        # settings.extract_formulas AND rights_summary["app_content"]["ok"]
+        # (formulas land in the app_content category). Produces structured
+        # formula records at runs/<id>/lanes/formulas.jsonl.
+        if settings.extract_formulas and rights_summary["app_content"]["ok"]:
+            try:
+                counts["formulas"] = extract_formulas(
+                    units_file=units_file,
+                    output_file=paths.lanes / "formulas.jsonl",
+                    rejected_file=paths.queues / "rejected_generation_formulas.jsonl",
+                    settings=settings,
+                    llm=llm,
+                )
+                _log.info("formula_extraction_completed_in_runner", run_id=run_id, counts=counts["formulas"])
+            except Exception as exc:
+                _log.warning("formula_extraction_failed_non_fatal", run_id=run_id, error=str(exc))
+                counts["formulas"] = {"formulas_accepted": 0, "formulas_rejected": 0, "error": str(exc)}
+        else:
+            counts["formulas"] = {"formulas_accepted": 0, "formulas_rejected": 0, "skipped_reason": "extract_formulas=false or app_content rights blocked"}
+
         # Verification (schema + similarity + optional LLM-judge gate).
         # Verification reads lane output files; lanes that were skipped above
         # have no output to verify, so guard.
@@ -287,5 +306,11 @@ def run_pipeline(
             paths.reports / "run_report.json",
             {"run_id": run_id, "counts": counts, "rights_summary": rights_summary, "outputs": outputs},
         )
-        _log.info("pipeline_run_completed", run_id=run_id, total_lanes_run=len([l for l in TRAIN_LANES + APP_LANES if (paths.lanes / f"{l}.jsonl").exists()]))
+        _log.info(
+            "pipeline_run_completed",
+            run_id=run_id,
+            total_lanes_run=len(
+                [lane for lane in TRAIN_LANES + APP_LANES if (paths.lanes / f"{lane}.jsonl").exists()]
+            ),
+        )
         return {"run_id": run_id, "outputs": outputs, "counts": counts, "manifest": manifest}

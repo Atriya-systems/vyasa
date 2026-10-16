@@ -1,6 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "App Content Card",
+  "description": "Schema for any app-content card produced by Vyasa lanes (notes, tricks, misconceptions, dpp_tests, grading_feedback, revision, mnemonics, career, parent_copy).",
   "type": "object",
   "required": [
     "card_id",
@@ -29,6 +30,20 @@
     },
     "body": {
       "type": "string"
+    },
+    "diagram_url": {
+      "type": "string",
+      "description": "M4 addition. Optional reference to an illustrator-produced SVG / PNG diagram. Vyasa is text-only; this field lets downstream consumers attach a diagram to a card without re-issuing it. Format: absolute URL OR repo-relative path like 'content/diagrams/bio/cell_membrane.svg'.",
+      "format": "uri-reference"
+    },
+    "diagram_caption": {
+      "type": "string",
+      "description": "M4 addition. Caption to display alongside diagram_url. Useful when the body text references the diagram but doesn't repeat the caption."
+    },
+    "explanation_style": {
+      "type": "string",
+      "description": "M4 addition. When this card was produced under an A/B variant generation, records which style was used. Empty / missing = single canonical version.",
+      "enum": ["", "concise", "detailed", "analogy_led"]
     },
     "metadata": {
       "type": "object"
