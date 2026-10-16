@@ -20,9 +20,10 @@ Modules:
 - rollback: batch-level rollback with audit log
 - rubrics: per-content-type review rubrics (YAML files at cms/rubrics/)
 
-The CMS is OPTIONAL — Phase 1 batch generation works without it. Activated
-when the operator calls ``aspireace-mocf cms-register`` after a run, OR via
-the Streamlit review_app which auto-registers approvals.
+The CMS is OPTIONAL — Phase 1 batch generation works without it. Operators use
+the authenticated ``aspireace-mocf cms-register`` and ``cms-transition``
+commands; the existing Streamlit review app remains a separate JSONL review
+surface and does not auto-register records.
 
 Owner: ATRIYA / Vyasa
 Version: 1.0.0 (M4)

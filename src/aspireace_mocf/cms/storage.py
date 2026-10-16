@@ -220,6 +220,19 @@ def connect(db_path: Path | str | None = None) -> Iterator[sqlite3.Connection]:
         yield conn
 
 
+@contextmanager
+def transaction(conn: sqlite3.Connection) -> Iterator[None]:
+    """Commit a logical CMS write atomically, rolling it back on every error."""
+    conn.execute("BEGIN IMMEDIATE")
+    try:
+        yield
+    except BaseException:
+        conn.rollback()
+        raise
+    else:
+        conn.commit()
+
+
 def row_to_dict(row: sqlite3.Row | None) -> dict[str, Any] | None:
     """Convert a Row to dict (or None passthrough)."""
     if row is None:
@@ -249,18 +262,26 @@ def upsert_record(
     actor_role: str = "system",
     db_path: Path | str | None = None,
 ) -> dict[str, Any]:
-    """Insert or update a content record. New records start at the given state
-    (default 'draft'); existing records preserve their state unless
-    state_machine.transition() is called separately.
+    """Insert or update a record at the safe ``draft`` entry state.
+
+    Lifecycle state and training eligibility can only change through
+    ``state_machine.transition``.
 
     Returns the resulting record row as a dict.
     """
+    if state != "draft":
+        raise ValueError("CMS registration only permits the draft entry state")
+    if not isinstance(payload.get("metadata", {}), dict):
+        raise ValueError("CMS record metadata must be an object")
+    payload = json.loads(json.dumps(payload, ensure_ascii=False))
+    meta = payload.setdefault("metadata", {})
+    meta["train_allowed"] = False
+    meta["quality_status"] = "draft"
     payload_json = json.dumps(payload, ensure_ascii=False)
     payload_sha = _payload_sha256(payload)
-    meta = payload.get("metadata", {})
     now = _now()
 
-    with connect(db_path) as conn:
+    with connect(db_path) as conn, transaction(conn):
         existing = conn.execute(
             "SELECT * FROM content_records WHERE content_id = ?", (content_id,)
         ).fetchone()

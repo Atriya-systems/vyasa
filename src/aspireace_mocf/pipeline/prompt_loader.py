@@ -14,6 +14,7 @@ from __future__ import annotations
 
 from functools import lru_cache
 from pathlib import Path
+from typing import Any
 
 from aspireace_mocf.settings import PROJECT_ROOT
 from aspireace_mocf.utils.logging import get_logger
@@ -107,6 +108,22 @@ def load_prompt(filename: str, subject: str | None = None, style: str | None = N
         has_subject_addendum=subject_path is not None,
         has_style_addendum=style_path is not None,
     )
+    return text
+
+
+def render_prompt(filename: str, values: dict[str, Any], *, subject: str | None = None, style: str | None = None) -> str:
+    """Render a base prompt before adding subject/style guidance.
+
+    Subject guidance can contain literal LaTeX braces, so it is appended only
+    after formatting the base template.
+    """
+    text = _resolve_base_path(filename).read_text(encoding="utf-8").format(**values)
+    subject_path = _subject_addendum_path(subject)
+    if subject_path is not None:
+        text += _SUBJECT_SEPARATOR + subject_path.read_text(encoding="utf-8")
+    style_path = _style_addendum_path(style)
+    if style_path is not None:
+        text += _STYLE_SEPARATOR + style_path.read_text(encoding="utf-8")
     return text
 
 

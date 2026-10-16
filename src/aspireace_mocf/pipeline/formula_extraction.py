@@ -26,7 +26,7 @@ from typing import Any
 from tqdm import tqdm
 
 from aspireace_mocf.pipeline.ids import card_id
-from aspireace_mocf.pipeline.prompt_loader import load_prompt
+from aspireace_mocf.pipeline.prompt_loader import render_prompt
 from aspireace_mocf.providers.llm import LLMClient
 from aspireace_mocf.settings import PROJECT_ROOT, Settings
 from aspireace_mocf.utils.jsonio import read_jsonl, write_jsonl
@@ -51,8 +51,6 @@ def extract_formulas(
     """
     units = read_jsonl(units_file)
     schema = load_schema(PROJECT_ROOT / "schemas" / "formula_record.schema.json")
-    template = load_prompt("07_formula_extraction.md", subject=settings.subject)
-
     accepted: list[dict[str, Any]] = []
     rejected: list[dict[str, Any]] = []
 
@@ -61,14 +59,19 @@ def extract_formulas(
             # No formulas in this unit; nothing to extract.
             continue
 
-        prompt = template.format(
-            source_unit_json=json.dumps(unit, ensure_ascii=False, indent=2),
-            count=settings.formula_records_per_unit,
-            unit_id=unit["unit_id"],
-            subject=unit.get("subject", settings.subject),
-            chapter_no=unit.get("chapter_no", 0),
-            exam_targets_json=json.dumps(unit.get("exam_targets", settings.exam_targets), ensure_ascii=False),
-        )
+        try:
+            prompt = render_prompt("07_formula_extraction.md", {
+                "source_unit_json": json.dumps(unit, ensure_ascii=False, indent=2),
+                "count": settings.formula_records_per_unit,
+                "unit_id": unit["unit_id"],
+                "subject": unit.get("subject", settings.subject),
+                "chapter_no": unit.get("chapter_no", 1),
+                "exam_targets_json": json.dumps(unit.get("exam_targets", settings.exam_targets), ensure_ascii=False),
+            }, subject=unit.get("subject", settings.subject))
+        except (KeyError, ValueError) as exc:
+            _log.warning("formula_extraction_template_error", unit_id=unit["unit_id"], error=str(exc))
+            rejected.append({"unit_id": unit["unit_id"], "error": f"template_error: {exc}"})
+            continue
 
         try:
             rows = llm.chat_json(
@@ -87,9 +90,16 @@ def extract_formulas(
             rejected.append({"unit_id": unit["unit_id"], "error": "non_array_response"})
             continue
 
-        for serial, raw in enumerate(rows, start=1):
+        for serial, raw_item in enumerate(rows, start=1):
+            if not isinstance(raw_item, dict):
+                rejected.append({"unit_id": unit["unit_id"], "error": "non_object_item", "row": raw_item})
+                continue
+            raw = dict(raw_item)
             raw["formula_id"] = card_id("FORMULA", unit["unit_id"], serial)
             raw["source_unit_id"] = unit["unit_id"]
+            if not isinstance(raw.get("metadata", {}), dict):
+                rejected.append({"unit_id": unit["unit_id"], "error": "invalid_metadata", "row": raw})
+                continue
             raw.setdefault("metadata", {})
             raw["metadata"].update({
                 "lane": "formulas",
@@ -101,7 +111,7 @@ def extract_formulas(
             })
             # Force schema-required fields if LLM omitted them
             raw.setdefault("subject", unit.get("subject", settings.subject))
-            raw.setdefault("chapter_no", unit.get("chapter_no", 0))
+            raw.setdefault("chapter_no", unit.get("chapter_no", 1))
 
             schema_errs = validate_item(raw, schema)
             if schema_errs:

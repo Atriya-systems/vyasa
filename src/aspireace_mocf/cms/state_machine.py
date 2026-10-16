@@ -25,7 +25,7 @@ import json
 from enum import StrEnum
 from typing import Any
 
-from aspireace_mocf.cms.storage import _now, connect
+from aspireace_mocf.cms.storage import _now, connect, transaction
 from aspireace_mocf.utils.errors import FactoryError
 from aspireace_mocf.utils.logging import get_logger
 
@@ -132,7 +132,7 @@ def transition(
     Raises TransitionError on invalid transition / role / unknown record.
     """
     now = _now()
-    with connect(db_path) as conn:
+    with connect(db_path) as conn, transaction(conn):
         row = conn.execute(
             "SELECT content_id, state, lane, train_allowed FROM content_records WHERE content_id = ?",
             (content_id,),
