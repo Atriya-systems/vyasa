@@ -1,0 +1,53 @@
+{
+  "content_type": "parent_copy",
+  "version": "1.0.0",
+  "description": "Review rubric for parent-communication templates (push / email / in-app message copy targeted at parents).",
+  "criteria": [
+    {
+      "key": "tone_appropriateness",
+      "label": "Tone appropriateness",
+      "description": "Tone is respectful, informative, not alarmist. Treats parents as informed partners, not customers to be sold to.",
+      "weight": 0.30,
+      "scale": "1-5",
+      "minimum_pass": 4
+    },
+    {
+      "key": "factual_accuracy",
+      "label": "Factual accuracy about student progress",
+      "description": "If the message refers to student data (streaks / mastery / mock scores), the wording matches what the app actually tracks. No 'your child is failing' when the data doesn't say that.",
+      "weight": 0.25,
+      "scale": "1-5",
+      "minimum_pass": 5
+    },
+    {
+      "key": "no_dark_pattern",
+      "label": "No dark pattern / no anxiety-induce",
+      "description": "Does not manufacture urgency, fear, or shame to drive engagement. No 'your child is falling behind' framing without supportive next step.",
+      "weight": 0.20,
+      "scale": "1-5",
+      "minimum_pass": 5
+    },
+    {
+      "key": "clarity_of_action",
+      "label": "Clarity of action / CTA",
+      "description": "If there's a CTA, it's specific and unambiguous. If informational only, that's clear too.",
+      "weight": 0.15,
+      "scale": "1-5",
+      "minimum_pass": 4
+    },
+    {
+      "key": "cultural_fit",
+      "label": "Indian-parent cultural fit",
+      "description": "Language + framing fits Indian-parent expectations. Hindi-medium / regional-medium fallback (when un-deferred) is grammatically correct.",
+      "weight": 0.10,
+      "scale": "1-5",
+      "minimum_pass": 4
+    }
+  ],
+  "approval_rule": "factual_accuracy + no_dark_pattern MUST be 5/5. Senior PM sign-off required (cannot be junior-approved).",
+  "common_flag_types": [
+    "factual_error",
+    "language_issue",
+    "level_inappropriate"
+  ]
+}

@@ -30,6 +30,16 @@ class Settings:
     dpp_records_per_unit: int
     rubric_records_per_unit: int
     revision_records_per_unit: int
+    # M4 additions — per-lane counts for new lanes (10-14).
+    pyq_variant_records_per_unit: int
+    mnemonics_records_per_unit: int
+    diagnostic_records_per_unit: int
+    career_records_per_unit: int
+    parent_copy_records_per_unit: int
+    # M4 additions — explanation-style A/B + formula extraction toggles.
+    explanation_style: str   # "" | "concise" | "detailed" | "analogy_led"
+    extract_formulas: bool
+    formula_records_per_unit: int
     eval_ratio: float
     random_seed: int
     enable_llm_judge: bool
@@ -63,6 +73,14 @@ def load_settings() -> Settings:
         dpp_records_per_unit=int(os.getenv("DPP_RECORDS_PER_UNIT", "3")),
         rubric_records_per_unit=int(os.getenv("RUBRIC_RECORDS_PER_UNIT", "2")),
         revision_records_per_unit=int(os.getenv("REVISION_RECORDS_PER_UNIT", "3")),
+        pyq_variant_records_per_unit=int(os.getenv("PYQ_VARIANT_RECORDS_PER_UNIT", "3")),
+        mnemonics_records_per_unit=int(os.getenv("MNEMONICS_RECORDS_PER_UNIT", "2")),
+        diagnostic_records_per_unit=int(os.getenv("DIAGNOSTIC_RECORDS_PER_UNIT", "3")),
+        career_records_per_unit=int(os.getenv("CAREER_RECORDS_PER_UNIT", "2")),
+        parent_copy_records_per_unit=int(os.getenv("PARENT_COPY_RECORDS_PER_UNIT", "2")),
+        explanation_style=os.getenv("EXPLANATION_STYLE", "").strip(),
+        extract_formulas=os.getenv("EXTRACT_FORMULAS", "true").strip().lower() == "true",
+        formula_records_per_unit=int(os.getenv("FORMULA_RECORDS_PER_UNIT", "3")),
         eval_ratio=float(os.getenv("EVAL_RATIO", "0.10")),
         random_seed=int(os.getenv("RANDOM_SEED", "42")),
         enable_llm_judge=os.getenv("ENABLE_LLM_JUDGE", "false").strip().lower() == "true",

@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Formula Record",
+  "description": "M4 addition. Structured formula entry produced by Vyasa's notes + tricks lanes when source_unit contains a formula. Maps to canonical §A5 formula_library. Per-formula: LaTeX expression + plain-English statement + applicability conditions + worked example + dimensional consistency + derivation index.",
+  "type": "object",
+  "required": [
+    "formula_id",
+    "source_unit_id",
+    "latex_expression",
+    "statement",
+    "applicability_conditions",
+    "subject",
+    "chapter_no",
+    "metadata"
+  ],
+  "properties": {
+    "formula_id": {
+      "type": "string",
+      "description": "Stable ID, e.g. FORMULA_PHY11_CH02_001."
+    },
+    "source_unit_id": {
+      "type": "string"
+    },
+    "latex_expression": {
+      "type": "string",
+      "description": "LaTeX-formatted formula, e.g. 'v^2 = u^2 + 2as' or 'PV = nRT'. Inline-friendly (no surrounding $...$)."
+    },
+    "statement": {
+      "type": "string",
+      "description": "Plain-English statement of the formula, e.g. 'Final velocity squared equals initial velocity squared plus twice the product of acceleration and displacement.'",
+      "minLength": 20
+    },
+    "variables": {
+      "type": "array",
+      "description": "Per-variable meaning + SI unit. e.g. [{'symbol': 'v', 'meaning': 'final velocity', 'unit': 'm/s'}, ...]",
+      "items": {
+        "type": "object",
+        "required": ["symbol", "meaning"],
+        "properties": {
+          "symbol": { "type": "string" },
+          "meaning": { "type": "string" },
+          "unit": { "type": "string" }
+        }
+      }
+    },
+    "applicability_conditions": {
+      "type": "array",
+      "description": "Bullet list of when the formula applies (and when it doesn't).",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "worked_example": {
+      "type": "string",
+      "description": "One concise worked example showing the formula in use."
+    },
+    "dimensional_check": {
+      "type": "string",
+      "description": "Dimensional consistency check, e.g. '[LT^-1]^2 = [LT^-1]^2 + [LT^-2][L] = [L^2T^-2]'. Optional but recommended for physics + chem."
+    },
+    "derivation_chapter_ref": {
+      "type": "string",
+      "description": "NCERT chapter where this formula is derived, e.g. 'Class 11 Physics, Chapter 3'."
+    },
+    "applied_in_chapters": {
+      "type": "array",
+      "description": "List of chapters where this formula is later applied (cross-chapter index).",
+      "items": { "type": "string" }
+    },
+    "subject": {
+      "type": "string",
+      "enum": ["Physics", "Chemistry", "Biology", "Mathematics"]
+    },
+    "chapter_no": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "exam_targets": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["JEE", "NEET", "JEE-Mains", "JEE-Adv", "CUET"]
+      }
+    },
+    "priority": {
+      "type": "string",
+      "description": "How critical this formula is to know cold.",
+      "enum": ["must_know", "should_know", "good_to_know"]
+    },
+    "metadata": {
+      "type": "object",
+      "required": ["quality_status", "train_allowed", "drafted_by"],
+      "additionalProperties": true
+    }
+  }
+}
