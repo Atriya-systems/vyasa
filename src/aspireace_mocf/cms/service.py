@@ -37,6 +37,7 @@ def transition_authenticated(
     to_state: str,
     actor: AuthenticatedActor,
     reason: str = "",
+    metadata: dict[str, Any] | None = None,
     db_path: Path | str | None = None,
 ) -> dict[str, Any]:
     """Apply a lifecycle transition with identity/role bound by authentication."""
@@ -46,5 +47,6 @@ def transition_authenticated(
         actor_id=actor.actor_id,
         actor_role=actor.actor_role,
         reason=reason,
+        metadata=metadata,
         db_path=db_path,
     )
